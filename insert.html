@@ -1,0 +1,35 @@
+// ################################# node_info_forwardNum的曲线 ############################
+var node_forwardNum_chart = echarts.init(document.getElementById('metric5'), 'white', {
+    renderer: 'canvas',
+    // width: document.getElementById("metric1").offsetWidth,
+    // height: document.getElementById("metric1").offsetHeight
+}
+);
+
+var old_data_node_forwardNum = [];
+
+function node_forwardNum_fetchData() {
+    $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:5000/node_fowardNum",
+        dataType: "json",
+        success: function (result) {
+            node_forwardNum_chart.setOption(result);
+            old_data_node_forwardNum = node_forwardNum_chart.getOption().series[0].data;
+        }
+    });
+}
+
+function node_forwardNum_dynamicdata() {
+    $.ajax({
+        type: "GET",
+        url: "http://127.0.0.1:5000/node_forwardNum_dynamicdata",
+        dataType: "json",
+        success: function (result) {
+            old_data_node_forwardNum.push([result.x_data, result.y_data]);
+            node_forwardNum_chart.setOption({
+                series: [{ data: old_data_node_forwardNum }]
+            });
+        }
+    });
+}

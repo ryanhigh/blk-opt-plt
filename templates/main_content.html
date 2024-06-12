@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% extends "title_side.html" %}
+
+<head>
+
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/resource/css/grid.css" type="text/css" />
+
+    <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+
+
+    <title>区块链性能测量结果</title>
+</head>
+
+{% block main_content %}
+<div class="metric_item" id="metric1">1</div>
+<div class="metric_item" id="metric2">2</div>
+<div class="metric_item" id="metric3">3</div>
+<div class="metric_item" id="metric4">4</div>
+<div class="metric_item" id="metric5">5</div>
+<div class="metric_item" id="metric6">6</div>
+<div class="metric_item" id="metric7">7</div>
+<div class="metric_item" id="metric8">8</div>
+<div class="metric_item" id="metric9">9</div>
+<div class="metric_item" id="metric10">10</div>
+<div class="metric_item" id="metric11">11</div>
+<div class="metric_item" id="metric12">12</div>
+<div class="metric_item" id="metric13">13</div>
+<div class="metric_item" id="metric14">14</div>
+<div class="metric_item" id="metric15">15</div>
+<div class="metric_item" id="metric16">16</div>
+<div class="metric_item" id="metric17">17</div>
+<div class="metric_item" id="metric18">18</div>
+<div class="metric_item" id="metric19">19</div>
+<div class="metric_item" id="metric20">20</div>
+
+
+
+<script>
+
+    $(
+        function () {
+            cpu_use_rate_fetchData();
+            setInterval(cpu_use_rate_dynamicdata, 500);
+            memory_use_rate_fetchData();
+            setInterval(memory_use_rate_dynamicdata, 500);
+            txpool_input_fetchData();
+            setInterval(txpool_input_dynamicdata, 500);
+            p2p_delay_fetchData();
+            setInterval(p2p_delay_dynamicdata, 500);
+            node_forwardNum_fetchData();
+            setInterval(node_forwardNum_dynamicdata, 500);
+            db_write_fetchData();
+            setInterval(db_write_dynamicdata, 500);
+            db_read_fetchData();
+            setInterval(db_read_dynamicdata, 500);
+            tx_queeu_delay_fetchData();
+            setInterval(tx_queue_delay_dynamicdata, 500);
+            block_delay_fetchData();
+            setInterval(block_delay_dynamicdata, 500);
+            tps_in_blk_fetchData();
+            setInterval(tps_in_blk_dynamicdata, 500);
+            blk_val_efficiency_fetchData();
+            setInterval(blk_val_efficiency_dynamicdata, 500);
+            tx_delay_fetchData();
+            setInterval(tx_delay_dynamicdata, 500);
+            consensus_cost_fetchData();
+            setInterval(consensus_cost_dynamicdata, 500);
+            proposal_fetchData();
+            setInterval(proposal_dynamicdata, 500);
+            prevote_fetchData();
+            setInterval(prevote_dynamicdata, 500);
+            precommit_fetchData();
+            setInterval(precommit_dynamicdata, 500);
+            // commit_fetchData();
+            // setInterval(commit_dynamicdata, 500);
+            // tx_conflict_rate_fetchData();
+            // setInterval(tx_conflict_rate_dynamicdata, 500);
+
+        }
+    );
+
+
+
+    // ################################# cpu_use_rate的曲线 ############################
+    var cpu_chart = echarts.init(document.getElementById('metric1'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight  这种方法无法填充div两边的空白
+    }
+    );
+
+    var old_data_cpu_use_rate = [];
+
+    function cpu_use_rate_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/cpu_use_rate",
+            dataType: "json",
+            success: function (result) {
+                cpu_chart.setOption(result);
+                old_data_cpu_use_rate = cpu_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function cpu_use_rate_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/cpu_use_rate_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_cpu_use_rate.push([result.x_data, result.y_data]);
+                // console.log('cpu: ', result.x_data, result.y_data)
+                cpu_chart.setOption({
+                    series: [{ data: old_data_cpu_use_rate }]
+                });
+            }
+        });
+    }
+
+
+
+    // ################################# memory_use_rate的曲线 ############################
+
+    var memory_chart = echarts.init(document.getElementById('metric2'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+
+    var old_data_memory_use_rate = [];
+
+    function memory_use_rate_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/memory_use_rate",
+            dataType: "json",
+            success: function (result) {
+                memory_chart.setOption(result);
+                old_data_memory_use_rate = memory_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function memory_use_rate_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/memory_use_rate_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_memory_use_rate.push([result.x_data, result.y_data]);
+                memory_chart.setOption({
+                    series: [{ data: old_data_memory_use_rate }]
+                });
+            }
+        });
+    }
+
+
+    // ################################# tx_pool_input的曲线 ############################
+    var txpool_input_chart = echarts.init(document.getElementById('metric3'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_txpool_input = [];
+
+    function txpool_input_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/txpool_input",
+            dataType: "json",
+            success: function (result) {
+                txpool_input_chart.setOption(result);
+                old_data_txpool_input = txpool_input_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function txpool_input_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/txpool_input_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_txpool_input.push([result.x_data, result.y_data]);
+                txpool_input_chart.setOption({
+                    series: [{ data: old_data_txpool_input }]
+                });
+            }
+        });
+    }
+
+    // ################################# p2p_avg_delay的曲线 ############################
+    var p2p_delay_chart = echarts.init(document.getElementById('metric4'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_p2p_delay = [];
+
+    function p2p_delay_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/p2p_delay",
+            dataType: "json",
+            success: function (result) {
+                p2p_delay_chart.setOption(result);
+                old_data_p2p_delay = p2p_delay_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function p2p_delay_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/p2p_delay_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_p2p_delay.push([result.x_data, result.y_data]);
+                p2p_delay_chart.setOption({
+                    series: [{ data: old_data_p2p_delay }]
+                });
+            }
+        });
+    }
+
+    // ################################# node_info_forwardNum的曲线 ############################
+    var node_forwardNum_chart = echarts.init(document.getElementById('metric5'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_node_forwardNum = [];
+
+    function node_forwardNum_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/node_forwardNum",
+            dataType: "json",
+            success: function (result) {
+                node_forwardNum_chart.setOption(result);
+                old_data_node_forwardNum = node_forwardNum_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function node_forwardNum_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/node_forwardNum_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_node_forwardNum.push([result.x_data, result.y_data]);
+                node_forwardNum_chart.setOption({
+                    series: [{ data: old_data_node_forwardNum }]
+                });
+            }
+        });
+    }
+
+    // ################################# db_write_v的曲线 ############################
+    var db_write_chart = echarts.init(document.getElementById('metric6'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_db_write = [];
+
+    function db_write_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/db_write",
+            dataType: "json",
+            success: function (result) {
+                db_write_chart.setOption(result);
+                old_data_db_write = db_write_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function db_write_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/db_write_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_db_write.push([result.x_data, result.y_data]);
+                db_write_chart.setOption({
+                    series: [{ data: old_data_db_write }]
+                });
+            }
+        });
+    }
+
+    // ################################# db_read_v的曲线 ############################
+    var db_read_chart = echarts.init(document.getElementById('metric7'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_db_read = [];
+
+    function db_read_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/db_read",
+            dataType: "json",
+            success: function (result) {
+                db_read_chart.setOption(result);
+                old_data_db_read = db_read_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function db_read_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/db_read_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_db_read.push([result.x_data, result.y_data]);
+                db_read_chart.setOption({
+                    series: [{ data: old_data_db_read }]
+                });
+            }
+        });
+    }
+
+
+    // ################################# tx_queue_delay的曲线 ############################
+    var tx_queue_delay_chart = echarts.init(document.getElementById('metric8'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_tx_queue_delay = [];
+
+    function tx_queeu_delay_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/tx_queue_delay",
+            dataType: "json",
+            success: function (result) {
+                tx_queue_delay_chart.setOption(result);
+                old_data_tx_queue_delay = tx_queue_delay_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function tx_queue_delay_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/tx_queue_delay_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_tx_queue_delay.push([result.x_data, result.y_data]);
+                tx_queue_delay_chart.setOption({
+                    series: [{ data: old_data_tx_queue_delay }]
+                });
+            }
+        });
+    }
+
+    // ################################# block_delay的曲线 ############################
+    var block_delay_chart = echarts.init(document.getElementById('metric9'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_block_delay = [];
+
+    function block_delay_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/block_delay",
+            dataType: "json",
+            success: function (result) {
+                block_delay_chart.setOption(result);
+                old_data_block_delay = block_delay_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function block_delay_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/block_delay_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_block_delay.push([result.x_data, result.y_data]);
+                block_delay_chart.setOption({
+                    series: [{ data: old_data_block_delay }]
+                });
+            }
+        });
+    }
+
+    // ################################# tps_in_blk的曲线 ############################
+    var tps_in_blk_chart = echarts.init(document.getElementById('metric10'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_tps_in_blk = [];
+
+    function tps_in_blk_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/tps_in_blk",
+            dataType: "json",
+            success: function (result) {
+                tps_in_blk_chart.setOption(result);
+                old_data_tps_in_blk = tps_in_blk_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function tps_in_blk_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/tps_in_blk_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_tps_in_blk.push([result.x_data, result.y_data]);
+                tps_in_blk_chart.setOption({
+                    series: [{ data: old_data_tps_in_blk }]
+                });
+            }
+        });
+    }
+
+    // ################################# blk_val_efficiency的曲线 ############################
+    var blk_val_efficiency_chart = echarts.init(document.getElementById('metric11'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_blk_val_efficiency = [];
+
+    function blk_val_efficiency_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/blk_val_efficiency",
+            dataType: "json",
+            success: function (result) {
+                blk_val_efficiency_chart.setOption(result);
+                old_data_blk_val_efficiency = blk_val_efficiency_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function blk_val_efficiency_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/blk_val_efficiency_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_blk_val_efficiency.push([result.x_data, result.y_data]);
+                blk_val_efficiency_chart.setOption({
+                    series: [{ data: old_data_blk_val_efficiency }]
+                });
+            }
+        });
+    }
+
+    // ################################# tx_delay的曲线 ############################
+    var tx_delay_chart = echarts.init(document.getElementById('metric12'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_tx_delay = [];
+
+    function tx_delay_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/tx_delay",
+            dataType: "json",
+            success: function (result) {
+                tx_delay_chart.setOption(result);
+                old_data_tx_delay = tx_delay_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function tx_delay_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/tx_delay_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_tx_delay.push([result.x_data, result.y_data]);
+                tx_delay_chart.setOption({
+                    series: [{ data: old_data_tx_delay }]
+                });
+            }
+        });
+    }
+
+    // ################################# consensus_cost的曲线 ############################
+    var consensus_cost_chart = echarts.init(document.getElementById('metric13'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_consensus_cost = [];
+
+    function consensus_cost_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/consensus_cost",
+            dataType: "json",
+            success: function (result) {
+                consensus_cost_chart.setOption(result);
+                old_data_consensus_cost = consensus_cost_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function consensus_cost_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/consensus_cost_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_consensus_cost.push([result.x_data, result.y_data]);
+                consensus_cost_chart.setOption({
+                    series: [{ data: old_data_consensus_cost }]
+                });
+            }
+        });
+    }
+
+    // ################################# proposal的曲线 ############################
+    var proposal_chart = echarts.init(document.getElementById('metric14'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_proposal = [];
+
+    function proposal_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/proposal",
+            dataType: "json",
+            success: function (result) {
+                proposal_chart.setOption(result);
+                old_data_proposal = proposal_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function proposal_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/proposal_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_proposal.push([result.x_data, result.y_data]);
+                proposal_chart.setOption({
+                    series: [{ data: old_data_proposal }]
+                });
+            }
+        });
+    }
+
+    // ################################# prevote的曲线 ############################
+    var prevote_chart = echarts.init(document.getElementById('metric15'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_prevote = [];
+
+    function prevote_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/prevote",
+            dataType: "json",
+            success: function (result) {
+                prevote_chart.setOption(result);
+                old_data_prevote = prevote_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function prevote_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/prevote_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_prevote.push([result.x_data, result.y_data]);
+                prevote_chart.setOption({
+                    series: [{ data: old_data_prevote }]
+                });
+            }
+        });
+    }
+
+    // ################################# precommit的曲线 ############################
+    var precommit_chart = echarts.init(document.getElementById('metric16'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_precommit = [];
+
+    function precommit_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/precommit",
+            dataType: "json",
+            success: function (result) {
+                precommit_chart.setOption(result);
+                old_data_precommit = precommit_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function precommit_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/precommit_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_precommit.push([result.x_data, result.y_data]);
+                precommit_chart.setOption({
+                    series: [{ data: old_data_precommit }]
+                });
+            }
+        });
+    }
+
+    // ################################# commit的曲线 ############################
+    var commit_chart = echarts.init(document.getElementById('metric17'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_commit = [];
+
+    function commit_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/commit",
+            dataType: "json",
+            success: function (result) {
+                commit_chart.setOption(result);
+                old_data_commit = commit_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function commit_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/commit_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_commit.push([result.x_data, result.y_data]);
+                commit_chart.setOption({
+                    series: [{ data: old_data_commit }]
+                });
+            }
+        });
+    }
+
+    // ################################# tx_conflict_rate的曲线 ############################
+    var tx_conflict_rate_chart = echarts.init(document.getElementById('metric18'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_tx_conflict_rate = [];
+
+    function tx_conflict_rate_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/tx_conflict_rate",
+            dataType: "json",
+            success: function (result) {
+                tx_conflict_rate_chart.setOption(result);
+                old_data_tx_conflict_rate = tx_conflict_rate_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function tx_conflict_rate_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/tx_conflict_rate_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_tx_conflict_rate.push([result.x_data, result.y_data]);
+                tx_conflict_rate_chart.setOption({
+                    series: [{ data: old_data_tx_conflict_rate }]
+                });
+            }
+        });
+    }
+
+
+</script>
+
+{% endblock main_content%}

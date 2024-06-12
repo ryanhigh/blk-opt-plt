@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% extends "title_side.html" %}
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/resource/css/grid.css" type="text/css" />
+
+    <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+
+
+    <title>2222区块链性能测量结果</title>
+</head>
+
+
+
+{% block main_content %}
+<div class="metric_item" id="metric1">1</div>
+<div class="metric_item" id="metric2">2</div>
+<div class="metric_item" id="metric3">3</div>
+<div class="metric_item" id="metric4">4</div>
+<div class="metric_item" id="metric5">5</div>
+<div class="metric_item" id="metric6">6</div>
+<div class="metric_item" id="metric7">7</div>
+<div class="metric_item" id="metric8">8</div>
+<div class="metric_item" id="metric9">9</div>
+<div class="metric_item" id="metric9">10</div>
+<div class="metric_item" id="metric9">11</div>
+<div class="metric_item" id="metric9">12</div>
+<div class="metric_item" id="metric9">13</div>
+<div class="metric_item" id="metric9">14</div>
+<div class="metric_item" id="metric9">15</div>
+<div class="metric_item" id="metric9">16</div>
+
+
+<script>
+
+    // alert('page 2')
+
+    startTime = Math.ceil(new Date().getTime() / 1000);
+    console.log('startTime:', startTime);
+    // console.log(`startTime: ${new Date().toLocaleString()}`);
+
+
+    // var leftTime
+    // var timeDiff
+    // console.log('init lefttime:', leftTime)
+    /*
+        function timediff() {
+            leftTime = Math.ceil(new Date().getTime() / 1000);
+            console.log('in timediff : leftTime:', leftTime);
+    
+            // console.log(`离开页面的时间是：${new Date().toLocaleString()}`);
+    
+            // 可以设置returnValue来显示一个提示信息，但这里不设置以避免混淆
+            // event.returnValue = 'true';
+    
+    
+            timeDiff = leftTime - startTime;
+            console.log('timeDiff:', timeDiff);
+            alert(leftTime)
+    
+        };
+    
+        window.addEventListener('onbeforeunload', timediff());
+    */
+    window.addEventListener('onbeforeunload', (event) => {
+        leftTime = Math.ceil(new Date().getTime() / 1000);
+        console.log('in addEventListener : leftTime:', leftTime);
+        timeDiff = leftTime - startTime;
+        console.log('timeDiff:', timeDiff);
+
+        event.returnValue = '您可能有未保存的更改！';
+        alert(leftTime)
+
+    });
+
+
+
+
+    // console.log('leftTime:', leftTime);
+
+    // console.log('timeDiff22222222222:', timeDiff);
+
+    // window.onbeforeunload = function (e) {
+    //     leftTime = Math.ceil(new Date().getTime() / 1000);
+    //     console.log('leftTime:', leftTime);
+    //     // alert('pause');
+
+    // };
+
+
+
+
+    chart = echarts.init(document.getElementById('metric2'), 'white',
+        { renderer: 'canvas' }
+    );
+    var old_data = [];
+    // 检查本地存储中是否有第一次显示状态变量
+    // var isFirstDisplay = localStorage.getItem('isFirstDisplay') !== 'true';
+    // console.log('init localStorage isFirstDisplay:', isFirstDisplay)
+    // // 如果是第一次显示则动态更新+把状态变量设置为true
+    // if (isFirstDisplay) {
+    //     localStorage.setItem('isFirstDisplay', 'true');
+    //     console.log('if localStorage isFirstDisplay:', isFirstDisplay)
+
+    //     // 获取数据并设置定时器更新数据
+    //     entropy_fetchData();
+    //     setInterval(entropy_dynamicdata, 1000);
+    // } else {
+    //     console.log('else localStorage isFirstDisplay:', isFirstDisplay)
+
+    //     // 如果不是第一次显示，静态显示完整数据
+    //     getStaticData();
+    //     setInterval(entropy_dynamicdata, 1000);
+
+    // }
+
+    var isFirstClick = localStorage.getItem('isFirstClick') !== 'true';
+    console.log('init isFirstClick:', isFirstClick);
+
+    // isFirstClick = true
+    // console.log('init isFirstClick:', isFirstClick)
+    if (isFirstClick) {
+        entropy_fetchData();
+        localStorage.setItem('isFirstClick', 'false');
+    }
+
+    if (localStorage.isFirstClick == 'false') {
+        getStaticData();
+        setInterval(entropy_dynamicdata, 1000);
+
+    }
+
+
+    // Static Part
+    function getStaticData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/entropy_line_all",
+            dataType: "json",
+            success: function (result) {
+                chart.setOption(result);
+                old_data = chart.getOption().series[0].data;
+            }
+        });
+    }
+
+
+    // Dynamic Part
+    function entropy_fetchData() {
+
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/entropy",
+            dataType: "json",
+            success: function (result) {
+                chart.setOption(result);
+                old_data = chart.getOption().series[0].data;
+            }
+        });
+        console.log('in if no change isFirstClick:', localStorage.isFirstClick)
+
+        // localStorage.setItem('isFirstClick', 'false');
+
+        // isFirstClick = false
+        // console.log('in if changed isFirstClick:', localStorage.isFirstClick)
+
+    }
+
+
+    // function entropy_fetchData() {
+    //     if (localStorage.isFirstClick == 'true') {
+    //         $.ajax({
+    //             type: "GET",
+    //             url: "http://127.0.0.1:5000/entropy",
+    //             dataType: "json",
+    //             success: function (result) {
+    //                 chart.setOption(result);
+    //                 old_data = chart.getOption().series[0].data;
+    //             }
+    //         });
+    //         console.log('in if no change isFirstClick:', localStorage.isFirstClick)
+
+    //         localStorage.setItem('isFirstClick', 'false');
+
+    //         // isFirstClick = false
+    //         console.log('in if changed isFirstClick:', localStorage.isFirstClick)
+
+    //     }
+    //     else {
+    //         getStaticData();
+    //         setInterval(entropy_dynamicdata, 1000);
+    //         console.log('in else isFirstClick:', localStorage.isFirstClick)
+
+    //     }
+
+    // }
+
+
+    // 离开和加载这个页面的时间 onload 计算时间差
+
+    function entropy_dynamicdata() {
+        // console.log('in entropy_dynamicdata isFirstClick:', localStorage.isFirstClick)
+
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/entropy_dynamicdata",
+            // data: old_data,
+            // time_cha,
+            dataType: "json",
+            success: function (result) {
+                old_data.push([result.x_data, result.y_data]);
+                console.log('entropy: ', result.entropy_idx, result.x_data, result.y_data)
+
+                chart.setOption({
+                    series: [{ data: old_data }]
+                });
+            }
+
+        })
+
+
+
+
+
+
+
+    }
+</script>
+
+{% endblock main_content%}
