@@ -38,7 +38,93 @@
 
 <script>
 
+<<<<<<< HEAD
     hz = localStorage.getItem('hz') //设置刷新频率，xxx毫秒，与主页的hz相同
+=======
+
+    $(
+        function () {
+            commit_fetchData();
+            setInterval(commit_dynamicdata, 500);
+            tx_conflict_rate_fetchData();
+            setInterval(tx_conflict_rate_dynamicdata, 500);
+        }
+    );
+
+    // ################################# commit的曲线 ############################
+    var commit_chart = echarts.init(document.getElementById('metric1'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_commit = [];
+
+    function commit_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/commit",
+            dataType: "json",
+            success: function (result) {
+                commit_chart.setOption(result);
+                old_data_commit = commit_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function commit_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/commit_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_commit.push([result.x_data, result.y_data]);
+                commit_chart.setOption({
+                    series: [{ data: old_data_commit }]
+                });
+            }
+        });
+    }
+
+    // ################################# tx_conflict_rate的曲线 ############################
+    var tx_conflict_rate_chart = echarts.init(document.getElementById('metric3'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_tx_conflict_rate = [];
+
+    function tx_conflict_rate_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/tx_conflict_rate",
+            dataType: "json",
+            success: function (result) {
+                tx_conflict_rate_chart.setOption(result);
+                old_data_tx_conflict_rate = tx_conflict_rate_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function tx_conflict_rate_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/tx_conflict_rate_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_tx_conflict_rate.push([result.x_data, result.y_data]);
+                tx_conflict_rate_chart.setOption({
+                    series: [{ data: old_data_tx_conflict_rate }]
+                });
+            }
+        });
+    }
+
+    // alert('page 2')
+>>>>>>> 78edd86 ('commit' & 'tx_conflict_rate' update in Page2)
 
 
 
