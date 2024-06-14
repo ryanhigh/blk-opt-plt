@@ -107,6 +107,9 @@ def tx_conflict_rate_dynamicdata():
 
 
 
+
+
+
 entropy_df = pd.read_csv('files/entropy_list.txt',header=None)
 
 @bp.route("/entropy")
