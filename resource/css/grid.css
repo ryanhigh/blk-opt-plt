@@ -1,15 +1,6 @@
 @charset "utf-8";
-/* 
-.micro_metric{
-    display: grid;
-    background: white;
-    width: 85%;
-    height: 90vh;
-    grid-template-rows: repeat(4, 1fr);
-    grid-template-columns: 15% repeat(4, 1fr);
-    gap: 2px;
-} */
 
+/****************** title_side页和第一页的布局****************** */
 .metric_item {
     background: none;
     border: 1px solid hsl(0, 0%, 80%);
@@ -22,7 +13,6 @@
 }
 
 
-
 .layout {
     width: 100vw;
     height: 100vh;
@@ -30,7 +20,7 @@
     display: grid;
     grid-template-areas:
         'header header'
-        'leftSide content';
+        'leftSide contenter';
     gap: 1px;
 }
 
@@ -55,7 +45,7 @@
 }
 
 #content {
-    grid-area: content;
+    grid-area: contenter;
     background: none;
     width: 87vw;
     height: 95vh;
@@ -63,4 +53,89 @@
     display: grid;
     grid-template-rows: repeat(4, 1fr);
     grid-template-columns: repeat(4, 1fr);
+}
+
+
+
+/***************************第二页的布局*******************/
+/* 参考：https://cssgrid-generator.netlify.app/ */
+
+/* #content2_metric1 {
+    grid-area: 1 / 1 / 2 / 2;
+}
+
+#content2_metric2 {
+    grid-area: 1 / 2 / 2 / 3;
+}
+
+#content2_metric3 {
+    grid-area: 1 / 3 / 2 / 4;
+}
+
+#content2_metric4 {
+    grid-area: 1 / 4 / 2 / 5;
+}
+
+#content2_metric5 {
+    grid-area: 2 / 1 / 4 / 3;
+}
+
+#content2_metric6 {
+    grid-area: 2 / 3 / 4 / 5;
+}
+
+#content2_metric7 {
+    grid-area: 4 / 1 / 5 / 2;
+}
+
+#content2_metric8 {
+    grid-area: 4 / 2 / 5 / 3;
+}
+
+#content2_metric9 {
+    grid-area: 4 / 3 / 5 / 4;
+}
+
+#content2_metric10 {
+    grid-area: 4 / 4 / 5 / 5;
+}
+ */
+
+#content2_metric1 {
+    grid-area: 1 / 1 / 2 / 2;
+}
+
+#content2_metric2 {
+    grid-area: 1 / 2 / 2 / 3;
+}
+
+#content2_metric3 {
+    grid-area: 2 / 1 / 3 / 2;
+}
+
+#content2_metric4 {
+    grid-area: 2 / 2 / 3 / 3;
+}
+
+#content2_metric5 {
+    grid-area: 2 / 3 / 3 / 4;
+}
+
+#content2_metric6 {
+    grid-area: 3 / 1 / 5 / 3;
+}
+
+#content2_metric7 {
+    grid-area: 3 / 3 / 5 / 5;
+}
+
+#content2 {
+    background: none;
+    width: 87vw;
+    height: 95vh;
+
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+
 }

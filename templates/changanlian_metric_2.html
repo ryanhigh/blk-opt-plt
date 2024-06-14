@@ -17,28 +17,34 @@
 
 
 {% block main_content %}
-<div class="metric_item" id="metric1">1</div>
-<div class="metric_item" id="metric2">2</div>
-<div class="metric_item" id="metric3">3</div>
-<div class="metric_item" id="metric4">4</div>
-<div class="metric_item" id="metric5">5</div>
-<div class="metric_item" id="metric6">6</div>
-<div class="metric_item" id="metric7">7</div>
-<div class="metric_item" id="metric8">8</div>
-<div class="metric_item" id="metric9">9</div>
-<div class="metric_item" id="metric9">10</div>
-<div class="metric_item" id="metric9">11</div>
-<div class="metric_item" id="metric9">12</div>
-<div class="metric_item" id="metric9">13</div>
-<div class="metric_item" id="metric9">14</div>
-<div class="metric_item" id="metric9">15</div>
-<div class="metric_item" id="metric9">16</div>
-
+<div id="content2">
+    <div class="metric_item" id="content2_metric1">1</div>
+    <div class="metric_item" id="content2_metric2">2</div>
+    <div class="metric_item" id="content2_metric3">3</div>
+    <div class="metric_item" id="content2_metric4">4</div>
+    <div class="metric_item" id="content2_metric5">5</div>
+    <div class="metric_item" id="content2_metric6">6</div>
+    <div class="metric_item" id="content2_metric7">7</div>
+    <!-- <div class="metric_item" id="content2_metric8">8</div>
+    <div class="metric_item" id="content2_metric9">9</div>
+    <div class="metric_item" id="content2_metric10">10</div> -->
+    <!-- <div class="metric_item" id="content2_metric11">11</div>
+    <div class="metric_item" id="content2_metric12">12</div>
+    <div class="metric_item" id="content2_metric13">13</div>
+    <div class="metric_item" id="content2_metric14">14</div>
+    <div class="metric_item" id="content2_metric15">15</div>
+    <div class="metric_item" id="content2_metric16">16</div> -->
+</div>
 
 <script>
 
-    // alert('page 2')
+    hz = localStorage.getItem('hz') //设置刷新频率，xxx毫秒，与主页的hz相同
 
+
+
+
+
+    // ########################设置时间差，目的是离开此页面再回来时，图持续更新####################################
     startTime = Math.ceil(new Date().getTime() / 1000);
     console.log('startTime:', startTime);
     // console.log(`startTime: ${new Date().toLocaleString()}`);
@@ -78,23 +84,105 @@
     });
 
 
+    // #################################### 页面加载完毕执行此函数 ##############################
+    $(
+        function () {
+            commit_fetchData();
+            setInterval(commit_dynamicdata, hz);
+            tx_conflict_rate_fetchData();
+            setInterval(tx_conflict_rate_dynamicdata, hz);
+        }
+    );
 
 
-    // console.log('leftTime:', leftTime);
+    // ################################# commit的曲线 ############################
+    var commit_chart = echarts.init(document.getElementById('content2_metric1'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
 
-    // console.log('timeDiff22222222222:', timeDiff);
+    var old_data_commit = [];
 
-    // window.onbeforeunload = function (e) {
-    //     leftTime = Math.ceil(new Date().getTime() / 1000);
-    //     console.log('leftTime:', leftTime);
-    //     // alert('pause');
+    function commit_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/commit",
+            dataType: "json",
+            success: function (result) {
+                commit_chart.setOption(result);
+                old_data_commit = commit_chart.getOption().series[0].data;
+            }
+        });
+    }
 
-    // };
+    function commit_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/commit_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_commit.push([result.x_data, result.y_data]);
+                commit_chart.setOption({
+                    series: [{ data: old_data_commit }]
+                });
+            }
+        });
+    }
+
+
+
+    // ################################# tx_conflict_rate的曲线 ############################
+    var tx_conflict_rate_chart = echarts.init(document.getElementById('content2_metric2'), 'white', {
+        renderer: 'canvas',
+        // width: document.getElementById("metric1").offsetWidth,
+        // height: document.getElementById("metric1").offsetHeight
+    }
+    );
+
+    var old_data_tx_conflict_rate = [];
+
+    function tx_conflict_rate_fetchData() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/tx_conflict_rate",
+            dataType: "json",
+            success: function (result) {
+                tx_conflict_rate_chart.setOption(result);
+                old_data_tx_conflict_rate = tx_conflict_rate_chart.getOption().series[0].data;
+            }
+        });
+    }
+
+    function tx_conflict_rate_dynamicdata() {
+        $.ajax({
+            type: "GET",
+            url: "http://127.0.0.1:5000/tx_conflict_rate_dynamicdata",
+            dataType: "json",
+            success: function (result) {
+                old_data_tx_conflict_rate.push([result.x_data, result.y_data]);
+                tx_conflict_rate_chart.setOption({
+                    series: [{ data: old_data_tx_conflict_rate }]
+                });
+            }
+        });
+    }
+
+
+    // ################################# 熵 的曲线 3 ############################
 
 
 
 
-    chart = echarts.init(document.getElementById('metric2'), 'white',
+    // ################################# 熵 的曲线 4 ############################
+
+
+
+
+    // ################################# 熵 的曲线 5 ############################
+
+    chart = echarts.init(document.getElementById('content2_metric3'), 'white',
         { renderer: 'canvas' }
     );
     var old_data = [];
@@ -130,7 +218,7 @@
 
     if (localStorage.isFirstClick == 'false') {
         getStaticData();
-        setInterval(entropy_dynamicdata, 1000);
+        setInterval(entropy_dynamicdata, hz);
 
     }
 
@@ -195,7 +283,7 @@
     //         setInterval(entropy_dynamicdata, 1000);
     //         console.log('in else isFirstClick:', localStorage.isFirstClick)
 
-    //     }
+    //     }    
 
     // }
 
@@ -223,6 +311,19 @@
         })
 
 
+
+        // ################################# 有向图 的曲线 ############################
+        // 用id是content2_metric6 的div 画
+
+
+
+
+
+
+
+
+        // ################################# 无向图 的曲线 ############################
+        // 用id是content2_metric7 的div 画
 
 
 

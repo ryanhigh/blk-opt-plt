@@ -32,53 +32,69 @@
 <div class="metric_item" id="metric14">14</div>
 <div class="metric_item" id="metric15">15</div>
 <div class="metric_item" id="metric16">16</div>
-<div class="metric_item" id="metric17">17</div>
+<!-- <div class="metric_item" id="metric17">17</div>
 <div class="metric_item" id="metric18">18</div>
 <div class="metric_item" id="metric19">19</div>
-<div class="metric_item" id="metric20">20</div>
+<div class="metric_item" id="metric20">20</div> -->
 
 
 
 <script>
-
+    localStorage.setItem('hz', 1000) //设置刷新频率，xxx毫秒
+    hz = localStorage.getItem('hz')
     $(
         function () {
             cpu_use_rate_fetchData();
-            setInterval(cpu_use_rate_dynamicdata, 500);
+            setInterval(cpu_use_rate_dynamicdata, hz);
+
             memory_use_rate_fetchData();
-            setInterval(memory_use_rate_dynamicdata, 500);
+            setInterval(memory_use_rate_dynamicdata, hz);
+
             txpool_input_fetchData();
-            setInterval(txpool_input_dynamicdata, 500);
+            setInterval(txpool_input_dynamicdata, hz);
+
             p2p_delay_fetchData();
-            setInterval(p2p_delay_dynamicdata, 500);
+            setInterval(p2p_delay_dynamicdata, hz);
+
             node_forwardNum_fetchData();
-            setInterval(node_forwardNum_dynamicdata, 500);
+            setInterval(node_forwardNum_dynamicdata, hz);
+
             db_write_fetchData();
-            setInterval(db_write_dynamicdata, 500);
+            setInterval(db_write_dynamicdata, hz);
+
             db_read_fetchData();
-            setInterval(db_read_dynamicdata, 500);
+            setInterval(db_read_dynamicdata, hz);
+
             tx_queeu_delay_fetchData();
-            setInterval(tx_queue_delay_dynamicdata, 500);
+            setInterval(tx_queue_delay_dynamicdata, hz);
+
             block_delay_fetchData();
-            setInterval(block_delay_dynamicdata, 500);
+            setInterval(block_delay_dynamicdata, hz);
+
             tps_in_blk_fetchData();
-            setInterval(tps_in_blk_dynamicdata, 500);
+            setInterval(tps_in_blk_dynamicdata, hz);
+
             blk_val_efficiency_fetchData();
-            setInterval(blk_val_efficiency_dynamicdata, 500);
+            setInterval(blk_val_efficiency_dynamicdata, hz);
+
             tx_delay_fetchData();
-            setInterval(tx_delay_dynamicdata, 500);
+            setInterval(tx_delay_dynamicdata, hz);
+
             consensus_cost_fetchData();
-            setInterval(consensus_cost_dynamicdata, 500);
+            setInterval(consensus_cost_dynamicdata, hz);
+
             proposal_fetchData();
-            setInterval(proposal_dynamicdata, 500);
+            setInterval(proposal_dynamicdata, hz);
+
             prevote_fetchData();
-            setInterval(prevote_dynamicdata, 500);
+            setInterval(prevote_dynamicdata, hz);
+
             precommit_fetchData();
-            setInterval(precommit_dynamicdata, 500);
+            setInterval(precommit_dynamicdata, hz);
             // commit_fetchData();
-            // setInterval(commit_dynamicdata, 500);
+            // setInterval(commit_dynamicdata, hz);
             // tx_conflict_rate_fetchData();
-            // setInterval(tx_conflict_rate_dynamicdata, 500);
+            // setInterval(tx_conflict_rate_dynamicdata, hz);
 
         }
     );
@@ -668,77 +684,6 @@
         });
     }
 
-    // ################################# commit的曲线 ############################
-    var commit_chart = echarts.init(document.getElementById('metric17'), 'white', {
-        renderer: 'canvas',
-        // width: document.getElementById("metric1").offsetWidth,
-        // height: document.getElementById("metric1").offsetHeight
-    }
-    );
-
-    var old_data_commit = [];
-
-    function commit_fetchData() {
-        $.ajax({
-            type: "GET",
-            url: "http://127.0.0.1:5000/commit",
-            dataType: "json",
-            success: function (result) {
-                commit_chart.setOption(result);
-                old_data_commit = commit_chart.getOption().series[0].data;
-            }
-        });
-    }
-
-    function commit_dynamicdata() {
-        $.ajax({
-            type: "GET",
-            url: "http://127.0.0.1:5000/commit_dynamicdata",
-            dataType: "json",
-            success: function (result) {
-                old_data_commit.push([result.x_data, result.y_data]);
-                commit_chart.setOption({
-                    series: [{ data: old_data_commit }]
-                });
-            }
-        });
-    }
-
-    // ################################# tx_conflict_rate的曲线 ############################
-    var tx_conflict_rate_chart = echarts.init(document.getElementById('metric18'), 'white', {
-        renderer: 'canvas',
-        // width: document.getElementById("metric1").offsetWidth,
-        // height: document.getElementById("metric1").offsetHeight
-    }
-    );
-
-    var old_data_tx_conflict_rate = [];
-
-    function tx_conflict_rate_fetchData() {
-        $.ajax({
-            type: "GET",
-            url: "http://127.0.0.1:5000/tx_conflict_rate",
-            dataType: "json",
-            success: function (result) {
-                tx_conflict_rate_chart.setOption(result);
-                old_data_tx_conflict_rate = tx_conflict_rate_chart.getOption().series[0].data;
-            }
-        });
-    }
-
-    function tx_conflict_rate_dynamicdata() {
-        $.ajax({
-            type: "GET",
-            url: "http://127.0.0.1:5000/tx_conflict_rate_dynamicdata",
-            dataType: "json",
-            success: function (result) {
-                old_data_tx_conflict_rate.push([result.x_data, result.y_data]);
-                tx_conflict_rate_chart.setOption({
-                    series: [{ data: old_data_tx_conflict_rate }]
-                });
-            }
-        });
-    }
 
 
 </script>

@@ -42,14 +42,17 @@ def line_base(df,line_name,n):
     # print('rows data:',df.iloc[:,0])
     line = (
         Line()
-        .add_xaxis(xaxis_data=df.iloc[:2,0][-5:].tolist())#第0列是时间
-        .add_yaxis(series_name=line_name,
+        .add_xaxis(xaxis_data=df.iloc[:2,0].tolist())#第0列是时间
+        .add_yaxis(series_name=line_name,   
                    y_axis=df.iloc[:2,n].tolist(),
                    is_smooth=True, 
+                   
                 #    markpoint_opts=opts.MarkPointOpts(data=[opts.MarkPointItem(type_="min"),opts.MarkPointItem(type_="max")]),
                    )
-        .set_global_opts(legend_opts=opts.LegendOpts(pos_left="10%",pos_top="10%"),
-                         xaxis_opts=(opts.AxisOpts(type_="time",name='时间戳',name_location='center',min_='dataMin',name_gap=25)),
+        .set_global_opts(legend_opts=opts.LegendOpts(pos_left="10%",pos_top="10%",
+                                                     textstyle_opts=opts.TextStyleOpts(font_family="微软雅黑",font_size="18")),
+                         xaxis_opts=(opts.AxisOpts(type_="time",name='时间戳',name_location='center',min_='dataMin',name_gap=25,
+                                                   name_textstyle_opts=opts.TextStyleOpts(font_family="微软雅黑",font_size="12"))),
                          yaxis_opts=(opts.AxisOpts(type_="value",min_='dataMin')))
         .set_series_opts(label_opts=opts.LabelOpts(is_show=False))
     )
@@ -147,7 +150,7 @@ node_forwardNum_idx = 3
 @app.route("/node_forwardNum_dynamicdata")
 def node_forwardNum_dynamicdata():
     global node_forwardNum_idx
-    print('node_forwardNum_idx:',node_forwardNum_idx)
+    print('node_forwardNum_idxNumpyEncoder:',node_forwardNum_idx)
     if node_forwardNum_idx == all_df.shape[0]-1:
         return jsonify({"x_data": '', "y_data": ''})
     else:
@@ -347,38 +350,6 @@ def precommit_dynamicdata():
         return jsonify({"x_data": '', "y_data": ''})
     else:
         precommit_idx,x,y = next_xy(all_df,precommit_idx,0,16)
-        return jsonify({"x_data": x, "y_data": y})
-# ################################# commit的曲线 17############################
-@app.route("/commit")
-def commit():
-    l = line_base(all_df,'commit',17)
-    return l.dump_options_with_quotes()
-
-commit_idx = 3
-@app.route("/commit_dynamicdata")
-def commit_dynamicdata():
-    global commit_idx
-    print('_idx:',commit_idx)
-    if commit_idx == all_df.shape[0]-1:
-        return jsonify({"x_data": '', "y_data": ''})
-    else:
-        commit_idx,x,y = next_xy(all_df,commit_idx,0,17)
-        return jsonify({"x_data": x, "y_data": y})
-# ################################# tx_conflict_rate的曲线 18############################
-@app.route("/tx_conflict_rate")
-def tx_conflict_rate():
-    l = line_base(all_df,'块内交易冲突率',18)
-    return l.dump_options_with_quotes()
-
-tx_conflict_rate_idx = 3
-@app.route("/tx_conflict_rate_dynamicdata")
-def tx_conflict_rate_dynamicdata():
-    global tx_conflict_rate_idx
-    print('tx_conflict_rate_idx:',tx_conflict_rate_idx)
-    if tx_conflict_rate_idx == all_df.shape[0]-1:
-        return jsonify({"x_data": '', "y_data": ''})
-    else:
-        tx_conflict_rate_idx,x,y = next_xy(all_df,tx_conflict_rate_idx,0,18)
         return jsonify({"x_data": x, "y_data": y})
 
 
