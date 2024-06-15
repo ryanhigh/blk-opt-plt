@@ -4,7 +4,7 @@ from pyecharts import options as opts
 from pyecharts.charts import Line
 from flask.json import jsonify
 import pyecharts
-# print('pyecharts version in app2 :',pyecharts.__version__)
+print('pyecharts version in app2 :',pyecharts.__version__)
 
 # 使用flask中的蓝图，每个.py文件对应一个html页面。分多个.py文件容易修改和扩展
 bp = Blueprint('page2', __name__)
@@ -13,7 +13,6 @@ bp = Blueprint('page2', __name__)
 def changanlian_metric_2():
     return render_template('changanlian_metric_2.html')
 
-<<<<<<< HEAD
 
 # 返回dataframe的下一行的第m、n列数据
 def next_xy(df,i,m,n):
@@ -108,11 +107,6 @@ def tx_conflict_rate_dynamicdata():
 
 
 
-
-
-
-=======
->>>>>>> 78edd86 ('commit' & 'tx_conflict_rate' update in Page2)
 entropy_df = pd.read_csv('files/entropy_list.txt',header=None)
 
 @bp.route("/entropy")
@@ -169,7 +163,6 @@ def entropy_dynamicdata():
         # 返回最新时间的数据
         return jsonify({"x_data": x, "y_data": y,"entropy_idx":entropy_idx})
 
-<<<<<<< HEAD
 
 
  ################################# 有向图 的曲线 ############################
@@ -185,5 +178,3 @@ def entropy_dynamicdata():
 
 
 ################################# 无向图 的曲线 ############################
-=======
->>>>>>> 78edd86 ('commit' & 'tx_conflict_rate' update in Page2)

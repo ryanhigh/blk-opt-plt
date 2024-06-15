@@ -21,13 +21,8 @@ class NumpyEncoder(json.JSONEncoder):
         return super(NumpyEncoder, self).default(obj)
 
 import app2 as a2
-import app3 as a3
-import app4 as a4
 app = Flask(__name__, template_folder="templates",static_folder="resource")
 app.register_blueprint(a2.bp)
-app.register_blueprint(a3.cp)
-app.register_blueprint(a4.dp)
-
 
 
 @app.route("/")
@@ -356,41 +351,6 @@ def precommit_dynamicdata():
     else:
         precommit_idx,x,y = next_xy(all_df,precommit_idx,0,16)
         return jsonify({"x_data": x, "y_data": y})
-<<<<<<< HEAD
-=======
-# # ################################# commit的曲线 17############################
-# @app.route("/commit")
-# def commit():
-#     l = line_base(all_df,'commit',17)
-#     return l.dump_options_with_quotes()
-
-# commit_idx = 3
-# @app.route("/commit_dynamicdata")
-# def commit_dynamicdata():
-#     global commit_idx
-#     print('commit_idx:',commit_idx)
-#     if commit_idx == all_df.shape[0]-1:
-#         return jsonify({"x_data": '', "y_data": ''})
-#     else:
-#         commit_idx,x,y = next_xy(all_df,commit_idx,0,17)
-#         return jsonify({"x_data": x, "y_data": y})
-# # ################################# tx_conflict_rate的曲线 18############################
-# @app.route("/tx_conflict_rate")
-# def tx_conflict_rate():
-#     l = line_base(all_df,'块内交易冲突率',18)
-#     return l.dump_options_with_quotes()
-
-# tx_conflict_rate_idx = 3
-# @app.route("/tx_conflict_rate_dynamicdata")
-# def tx_conflict_rate_dynamicdata():
-#     global tx_conflict_rate_idx
-#     print('tx_conflict_rate_idx:',tx_conflict_rate_idx)
-#     if tx_conflict_rate_idx == all_df.shape[0]-1:
-#         return jsonify({"x_data": '', "y_data": ''})
-#     else:
-#         tx_conflict_rate_idx,x,y = next_xy(all_df,tx_conflict_rate_idx,0,18)
-#         return jsonify({"x_data": x, "y_data": y})
->>>>>>> 78edd86 ('commit' & 'tx_conflict_rate' update in Page2)
 
 
 if __name__=='__main__':
